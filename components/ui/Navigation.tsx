@@ -1,6 +1,6 @@
 import Link from "next/link";
+import AuthMenu from "../AuthMenu";
 import { ModeToggle } from "./Modetoggle";
-import { Button } from "@/components/ui/button";
 
 export default function Navigation() {
   return (
@@ -35,8 +35,8 @@ export default function Navigation() {
           <Link href="/">About</Link>
         </li>
         <li className="">
-          <div className="space-x-2">
-            <Button>Login</Button>
+          <div className="flex items-center gap-2">
+            <AuthMenu />
             <ModeToggle />
           </div>
         </li>
