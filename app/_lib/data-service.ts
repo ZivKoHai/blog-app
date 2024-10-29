@@ -33,3 +33,16 @@ export async function getPostPicture(postId: string) {
 
   return data;
 }
+export async function getUserPosts(userId: string) {
+  const supabase = createClient();
+  const { data: Posts, error } = await supabase
+    .from("Posts")
+    .select("*")
+    .eq("author_id", userId);
+
+  if (error) {
+    throw error;
+  }
+
+  return Posts;
+}
