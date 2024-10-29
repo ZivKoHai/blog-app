@@ -1,8 +1,10 @@
-import { login, signup } from "./actions";
+"use client";
+
+import Link from "next/link";
+import { useState, useEffect } from "react";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,8 +13,56 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { createClientComponentClient } from "../utils/supabase/client";
+import { useRouter } from "next/dist/client/components/navigation";
+import { useUser } from "../hooks/useUser";
 
 export default function Page() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const router = useRouter();
+  const supabase = createClientComponentClient();
+
+  const data = useUser();
+
+  useEffect(() => {
+    if (data?.aud) {
+      router.push("/private");
+    }
+  }, [data?.aud, router]);
+
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      console.error("Login error:", error.message);
+      // Optionally, display an error message to the user
+    } else {
+      // Redirect to the home page
+      router.push("/");
+    }
+  };
+
+  const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+
+    if (error) {
+      console.error("Signup error:", error.message);
+    } else {
+      router.push("/");
+    }
+  };
+
   return (
     <form>
       <Card className="mx-auto max-w-sm">
@@ -31,19 +81,28 @@ export default function Page() {
               type="email"
               placeholder="m@example.com"
               required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
           <div className="grid gap-2">
             <Label htmlFor="password">Password</Label>
-            <Input id="password" name="password" type="password" required />
+            <Input
+              id="password"
+              name="password"
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
             <Link href="#" className="ml-auto inline-block text-sm underline">
               Forgot your password?
             </Link>
           </div>
-          <Button formAction={login} className="w-full mt-4">
+          <Button className="w-full mt-4" onClick={handleLogin}>
             Login
           </Button>
-          <Button formAction={signup} className="w-full mt-4">
+          <Button className="w-full mt-4" onClick={handleSignup}>
             Sign up
           </Button>
         </CardContent>
