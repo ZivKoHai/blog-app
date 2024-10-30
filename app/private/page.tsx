@@ -1,11 +1,11 @@
 import { redirect } from "next/navigation";
 
-import { createClient } from "../utils/supabase/server";
 import { Suspense } from "react";
 import ProfilePostContainer from "./profilePostContainer";
+import { createClient } from "../utils/supabase/client";
 
 export default async function PrivatePage() {
-  const supabase = await createClient();
+  const supabase = createClient();
 
   const { data, error } = await supabase.auth.getUser();
   if (error || !data?.user) {
