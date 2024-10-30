@@ -23,7 +23,7 @@ export default async function PrivatePage() {
       </div>
       <div>
         <Suspense fallback={<p className="text-7xl">Loading</p>}>
-          <ProfilePostContainer data={data} />
+          <ProfilePostContainer />
         </Suspense>
       </div>
     </div>

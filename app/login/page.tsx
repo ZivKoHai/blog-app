@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/card";
 import { createClientComponentClient } from "../utils/supabase/client";
 import { useRouter } from "next/dist/client/components/navigation";
-import { useUser } from "../hooks/useUser";
 
 export default function Page() {
   const [email, setEmail] = useState("");
@@ -23,15 +22,7 @@ export default function Page() {
   const router = useRouter();
   const supabase = createClientComponentClient();
 
-  const data = useUser();
-
-  useEffect(() => {
-    if (data?.aud) {
-      router.push("/private");
-    }
-  }, [data?.aud, router]);
-
-  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
     const { error } = await supabase.auth.signInWithPassword({
@@ -41,17 +32,15 @@ export default function Page() {
 
     if (error) {
       console.error("Login error:", error.message);
-      // Optionally, display an error message to the user
     } else {
-      // Redirect to the home page
       router.push("/");
     }
   };
 
-  const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSignup = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    const { data, error } = await supabase.auth.signUp({
+    const { error } = await supabase.auth.signUp({
       email,
       password,
     });
@@ -99,10 +88,10 @@ export default function Page() {
               Forgot your password?
             </Link>
           </div>
-          <Button className="w-full mt-4" onClick={handleLogin}>
+          <Button className="w-full mt-4" onClick={(e) => handleLogin(e)}>
             Login
           </Button>
-          <Button className="w-full mt-4" onClick={handleSignup}>
+          <Button className="w-full mt-4" onClick={(e) => handleSignup(e)}>
             Sign up
           </Button>
         </CardContent>

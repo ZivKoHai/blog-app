@@ -6,16 +6,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { getUserPosts } from "../_lib/data-service";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
+import { getUserPosts } from "@/app/_lib/data-service";
 
-export default async function ProfilePostContainer({
-  data,
-}: {
-  data: { user: { id: string } };
-}) {
-  const posts = await getUserPosts(data.user.id);
+export default async function ProfilePostContainer() {
+  const posts = await getUserPosts("1");
 
   const blurDataURL =
     "https://upload.wikimedia.org/wikipedia/commons/3/3f/Placeholder_view_vector.svg";
